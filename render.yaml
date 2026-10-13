@@ -1,0 +1,64 @@
+services:
+  # Spring Boot Web Service (Dev)
+  - type: web
+    name: springboot-app-dev
+    runtime: java
+    plan: free # Free instance for testing/dev
+    buildCommand: ./mvnw clean package -DskipTests
+    # Maven outputs to target/; filters out original-* jars if repackaging
+    startCommand: java -XX:MaxRAMPercentage=75.0 -jar $(ls target/*.jar | grep -v 'original' | head -n 1)
+    envVars:
+      - key: JAVA_VERSION
+        value: "25" # Or "17" depending on your pom.xml
+      - key: SPRING_PROFILES_ACTIVE
+        value: dev
+
+      # Wire individual Postgres fields to avoid "postgres://" vs "jdbc:postgresql://" mismatch
+      - key: DB_HOST
+        fromDatabase:
+          name: app-postgres-dev
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: app-postgres-dev
+          property: port
+      - key: DB_NAME
+        fromDatabase:
+          name: app-postgres-dev
+          property: database
+      - key: SPRING_DATASOURCE_USERNAME
+        fromDatabase:
+          name: app-postgres-dev
+          property: user
+      - key: SPRING_DATASOURCE_PASSWORD
+        fromDatabase:
+          name: app-postgres-dev
+          property: password
+
+      # Redis Configuration
+      - key: SPRING_DATA_REDIS_HOST
+        fromRedis:
+          name: app-redis-dev
+          property: host
+      - key: SPRING_DATA_REDIS_PORT
+        fromRedis:
+          name: app-redis-dev
+          property: port
+      - key: SPRING_DATA_REDIS_PASSWORD
+        fromRedis:
+          name: app-redis-dev
+          property: password
+
+  # Managed Redis (Starter tier is the smallest on Render)
+  - type: redis
+    name: app-redis-dev
+    plan: starter
+    ipAllowList: [] # Private internal network only
+
+# Managed PostgreSQL Database
+databases:
+  - name: app-postgres-dev
+    plan: free # Free tier database for dev (expires after 30 days)
+    databaseName: devdb
+    user: devuser
+    ipAllowList: []
