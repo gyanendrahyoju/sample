@@ -31,7 +31,24 @@ services:
           name: app-postgres-dev
           property: password
 
-      # Redis Configuration
+      - key: SPRING_DATA_REDIS_HOST
+        fromService:
+          type: redis
+          name: app-redis-dev
+          property: host
+
+      - key: SPRING_DATA_REDIS_PORT
+        fromService:
+          type: redis
+          name: app-redis-dev
+          property: port
+
+      - key: SPRING_DATA_REDIS_PASSWORD
+        fromService:
+          type: redis
+          name: app-redis-dev
+          property: password
+          
       - key: SPRING_DATA_REDIS_HOST
         fromRedis:
           name: app-redis-dev
