@@ -2,17 +2,15 @@ services:
   # Spring Boot Web Service (Dev)
   - type: web
     name: springboot-app-dev
-    runtime: java
+    runtime: docker
     plan: free # Free instance for testing/dev
-    buildCommand: ./mvnw clean package -DskipTests
-    # Maven outputs to target/; filters out original-* jars if repackaging
+    dockerfilePath: ./Dockerfile
     startCommand: java -XX:MaxRAMPercentage=75.0 -jar $(ls target/*.jar | grep -v 'original' | head -n 1)
     envVars:
       - key: JAVA_VERSION
         value: "25" # Or "17" depending on your pom.xml
       - key: SPRING_PROFILES_ACTIVE
         value: dev
-
       # Wire individual Postgres fields to avoid "postgres://" vs "jdbc:postgresql://" mismatch
       - key: DB_HOST
         fromDatabase:
