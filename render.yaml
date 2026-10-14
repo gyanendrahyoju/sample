@@ -41,14 +41,7 @@ services:
         fromService:
           type: redis
           name: app-redis-dev
-          property: port
-
-      - key: SPRING_DATA_REDIS_PASSWORD
-        fromService:
-          type: redis
-          name: app-redis-dev
-          property: password
-          
+          property: port          
 
   # Managed Redis (Starter tier is the smallest on Render)
   - type: redis
