@@ -49,18 +49,6 @@ services:
           name: app-redis-dev
           property: password
           
-      - key: SPRING_DATA_REDIS_HOST
-        fromRedis:
-          name: app-redis-dev
-          property: host
-      - key: SPRING_DATA_REDIS_PORT
-        fromRedis:
-          name: app-redis-dev
-          property: port
-      - key: SPRING_DATA_REDIS_PASSWORD
-        fromRedis:
-          name: app-redis-dev
-          property: password
 
   # Managed Redis (Starter tier is the smallest on Render)
   - type: redis
